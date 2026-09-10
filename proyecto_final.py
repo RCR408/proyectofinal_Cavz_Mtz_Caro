@@ -1,6 +1,6 @@
 import LMC as lm
 
-mmnemico = {"INP":"901","OUT":"902","LDA":"5","STA":"3","ADD":"1","SUB":"2","BRA":"6","BRZ":"7","BRP":"8","HLT":"000","DAT":"000"}
+mnemonico = {"INP":"901","OUT":"902","LDA":"5","STA":"3","ADD":"1","SUB":"2","BRA":"6","BRZ":"7","BRP":"8","HLT":"000","DAT":"000"}
 
 
 not_need_dir = ["INP","OUT","HLT","DAT"]
@@ -18,24 +18,38 @@ def lmc(memoria,linea):
                 else:
                     file.write(str(i)+ "    " + str(mmnemico[str(memoria[i])]) +"    " + str(memoria[i]) + "\n")
 
-def leertxt1(archivo):
+def primera_pasada(archivo):
+    line = []
+    index = []
     instruccion = ""
+    temp_etiqueta = ""
+    etiqueta = []
+
     memoria = list([])
     count = 0
     with open(archivo) as file:
         for linea in file:
             linea = linea.replace(" ","",5)
             partes = linea.strip().split(' ')
-            instruccion = str(partes[0])
-            if len(partes) > 2:
-                instruccion = str(partes[1])
+            if len(partes)>1:
+                if partes[1] in mnemonico:
+                    instruccion = partes[1]
+                    temp_etiqueta = partes[0]
+                if partes[0] in mnemonico:
+                    instruccion = partes[0]
+                    temp_etiqueta = partes[1]
+
+                if len(etiqueta)>0:
+                    if temp_etiqueta not in etiqueta:
+                        etiqueta.append(temp_etiqueta)
+                else:
+                    etiqueta.append(temp_etiqueta)
+                line.append(count)  
+                index.append(etiqueta.index(temp_etiqueta))
+            else:
+                instruccion = partes[0]
             count +=1
             memoria.append(instruccion)
-    return memoria
+    return memoria, line,index
 
-temp = list([88,88])
-t = leertxt1("programa1.txt")
-lmc(t, temp)
-pe = lm.leertxt("solucion.txt")
-
-print(lm.ejecutar_lmc(pe,[7,8]))
+t = primera_pasada("prueba01.txt")

@@ -18,12 +18,14 @@ def ejecutar_lmc(memoria, entradas):
         if instruccion == 0:  # HLT
             break
         elif instruccion == 901:  # INP
+            if not entradas:
+                raise ValueError("No hay suficientes entradas.")
             acumulador = entradas.pop(0)
         elif instruccion == 902:  # OUT
             salidas.append(acumulador)
         elif instruccion == 999:  # RET
             if not pila:
-                raise ValueError("No hay nada en pila")
+                raise ValueError("No hay nada en pila.")
             pc = pila.pop()
         elif opcode == 5:  # LDA
             acumulador = memoria[direccion]
@@ -32,7 +34,6 @@ def ejecutar_lmc(memoria, entradas):
             pc = direccion
         elif opcode == 3:  # STA
             memoria[direccion] = acumulador
-
         elif opcode == 1:  # ADD
             acumulador = (acumulador + memoria[direccion]) % 1000
         elif opcode == 2:  # SUB
@@ -55,7 +56,7 @@ def leertxt(archivo):
 
     with open(archivo) as file:
         for linea in file:
-            partes = linea.strip().split("    ")
+            partes = linea.strip().split()
             direccion = int(partes[0])
             instruccion = int(partes[1])
 
@@ -63,12 +64,12 @@ def leertxt(archivo):
 
     return memoria
 
-if __name__ == "__main__":
-    prueba1 = leertxt("programa1.txt")
-    print(ejecutar_lmc(prueba1, [5, 6]))
+# if __name__ == "__main__":
+#    prueba1 = leertxt("programa1.txt")
+#    print(ejecutar_lmc(prueba1, [5, 6]))
 
-    prueba2 = leertxt("programa2.txt")
-    print(ejecutar_lmc(prueba2, [5, 6]))
+#    prueba2 = leertxt("programa2.txt")
+#    print(ejecutar_lmc(prueba2, [5, 6]))
     
-    prueba3 = leertxt("programa3.txt")
-    print(ejecutar_lmc(prueba3, [5, 6]))
+#    prueba3 = leertxt("programa3.txt")
+#    print(ejecutar_lmc(prueba3, [5, 6]))
